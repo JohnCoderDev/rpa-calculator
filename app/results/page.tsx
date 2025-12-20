@@ -1,13 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Minus, MoveLeft } from "lucide-react";
+import { MoveLeft } from "lucide-react";
 import Link from "next/link";
 import { RpaCalculatorResult } from "../_lib/rpa-calculator";
 import { Separator } from "@/components/ui/separator";
 
 export default function ResultsPage() {
   const results: RpaCalculatorResult | null = JSON.parse(
-    sessionStorage.getItem("rpa-calculation-result") || "null"
+    localStorage.getItem("rpa-calculation-result") || "null"
   );
   return (
     <main className="flex flex-col mx-auto pt-20 items-center w-2xl min-h-screen animate-in fade-in duration-1000">
