@@ -6,9 +6,10 @@ import { RpaCalculatorResult } from "../_lib/rpa-calculator";
 import { Separator } from "@/components/ui/separator";
 
 export default function ResultsPage() {
-  const results: RpaCalculatorResult | null = JSON.parse(
-    localStorage.getItem("rpa-calculation-result") || "null"
-  );
+  const results: RpaCalculatorResult | null =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("rpa-calculation-result") || "null")
+      : null;
   return (
     <main className="flex flex-col mx-auto pt-20 items-center w-2xl min-h-screen animate-in fade-in duration-1000">
       <div className="border rounded-lg p-6 w-full">
