@@ -610,7 +610,7 @@ export default function Home() {
                 calculationMode === "gross"
                   ? calculateRpaByGrossValue(props)
                   : calculateRpaByNetValue(parseFloat(amountValue), props);
-              sessionStorage.setItem(
+              localStorage.setItem(
                 "rpa-calculation-result",
                 JSON.stringify(result)
               );
