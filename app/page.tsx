@@ -78,7 +78,9 @@ export default function Home() {
   const [issAliquot, setIssAliquot] = useState(
     rpaPropsFromStorage.issAliquot?.toFixed(2) ?? "0.00"
   );
-  const [calculationMode, setCalculationMode] = useState(calculationModeFromStorage);
+  const [calculationMode, setCalculationMode] = useState(
+    calculationModeFromStorage
+  );
   const [amountValue, setAmountValue] = useState(
     rpaPropsFromStorage.grossAmount?.toFixed(2) ?? "0.00"
   );
@@ -203,7 +205,13 @@ export default function Home() {
                       size="sm"
                       className="p-0 cursor-pointer"
                     >
-                      Saiba mais sobre INSS
+                      <a
+                        href="https://pt.wikipedia.org/wiki/Instituto_Nacional_do_Seguro_Social"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Saiba mais sobre INSS
+                      </a>
                     </Button>
                   </div>
                 </HoverCardContent>
@@ -240,7 +248,13 @@ export default function Home() {
                       size="sm"
                       className="p-0 cursor-pointer"
                     >
-                      Saiba mais sobre ISS
+                      <a
+                        href="https://www.totvs.com/blog/adequacao-a-legislacao/iss/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Saiba mais sobre ISS
+                      </a>
                     </Button>
                   </div>
                 </HoverCardContent>
