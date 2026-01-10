@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { CopyIcon, MoveLeft } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RpaCalculatorResult } from "../_lib/rpa-calculator";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -14,10 +14,15 @@ import {
 export default function ResultsPage() {
   const [tooltipMessage, setTooltipMessage] = useState("Copiar Resultados");
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const results: RpaCalculatorResult | null =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("rpa-calculation-result") || "null")
-      : null;
+  const [results, setResults] = useState<RpaCalculatorResult | null>(null);
+
+  useEffect(() => {
+    const storedResults = JSON.parse(
+      localStorage.getItem("rpa-calculation-result") || "null"
+    );
+    setResults(storedResults);
+  }, []);
+
   return (
     <main className="flex flex-col mx-auto xl:pt-10 items-center xl:w-xl min-h-screen animate-in fade-in duration-1000">
       <div className="xl:border rounded-lg p-6 w-full">
@@ -56,9 +61,7 @@ export default function ResultsPage() {
 Valor do INSS\t${results.inssValue.toFixed(2).replace(".", ",")}
 Valor do ISS\t${results.issValue.toFixed(2).replace(".", ",")}
 Valor do IRRF\t${results.irrfValue.toFixed(2).replace(".", ",")}
-Total de Descontos\t${results.totalDeductions
-                        .toFixed(2)
-                        .replace(".", ",")}
+Total de Descontos\t${results.totalDeductions.toFixed(2).replace(".", ",")}
 Valor Líquido\t${results.netAmount.toFixed(2).replace(".", ",")}`;
                       navigator.clipboard.writeText(resultText);
                       setTooltipMessage("Copiado!");

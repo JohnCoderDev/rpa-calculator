@@ -17,7 +17,7 @@ import {
 import Link from "next/link";
 import { DefaultIRRFTable } from "../_lib/rpa-calculator";
 import { Separator } from "@/components/ui/separator";
-
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function IrrfPage() {
   const [deductionValue, setDeductionValue] = useState("");
@@ -32,11 +32,20 @@ export default function IrrfPage() {
     <main className="flex flex-col xl:mx-auto xl:pt-10 items-center xl:w-2xl min-h-screen animate-in fade-in duration-1000">
       <div className="border rounded-lg p-6 w-full">
         <div className="w-full mb-10 flex justify-start">
-          <Link href="/">
-            <Button size="icon" variant="secondary" className="cursor-pointer">
-              <MoveLeft />
-            </Button>
-          </Link>
+          <Tooltip>
+            <TooltipContent>Voltar</TooltipContent>
+            <TooltipTrigger asChild>
+            <Link href="/">
+              <Button
+                size="icon"
+                variant="secondary"
+                className="cursor-pointer"
+              >
+                <MoveLeft />
+              </Button>
+            </Link>
+          </TooltipTrigger> 
+          </Tooltip>
         </div>
         <div className="w-full flex flex-col gap-1">
           <h4 className="text-xl font-semibold mb-2">Redução de Base</h4>
@@ -114,7 +123,11 @@ export default function IrrfPage() {
                   <tbody>
                     <tr>
                       <td>{bracket.min.toFixed(2).replace(".", ",")}</td>
-                      <td>{bracket.max === Infinity ? "-" : bracket.max.toFixed(2).replace(".", ",")}</td>
+                      <td>
+                        {bracket.max === Infinity
+                          ? "-"
+                          : bracket.max.toFixed(2).replace(".", ",")}
+                      </td>
                       <td>{bracket.rate.toFixed(2).replace(".", ",")}</td>
                       <td>{bracket.deduction.toFixed(2).replace(".", ",")}</td>
                     </tr>

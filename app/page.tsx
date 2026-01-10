@@ -43,6 +43,11 @@ import {
   setLocalStorageItem,
 } from "./_lib/storage-manager";
 import { get } from "http";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Home() {
   const rpaPropsFromStorage = getLocalStorageItem<RpaCalculatorProps>(
@@ -85,7 +90,9 @@ export default function Home() {
   return (
     <main className="flex min-h-screen mx-auto flex-col items-center xl:pt-10 xl:w-xl animate-in fade-in duration-1000">
       <div className="flex flex-col gap-4 xl:border xl:border-gray-200 p-16 rounded-lg xl:shadow-sm">
-        <h4 className="text-xl font-bold mb-6">Calculadora de Recibo de Pessoas Autônomas</h4>
+        <h4 className="text-xl font-bold mb-6">
+          Calculadora de Recibo de Pessoas Autônomas
+        </h4>
         <div className="flex flex-col xl:flex-row gap-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="calculation-mode" className="text-md">
@@ -237,15 +244,20 @@ export default function Home() {
               </ItemDescription>
             </ItemContent>
             <ItemActions>
-              <Link href="/irrf">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="cursor-pointer"
-                >
-                  <Settings2 />
-                </Button>
-              </Link>
+              <Tooltip>
+                <TooltipContent>Configurações do IRRF</TooltipContent>
+                <TooltipTrigger asChild>
+                  <Link href="/irrf">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="cursor-pointer"
+                    >
+                      <Settings2 />
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+              </Tooltip>
             </ItemActions>
           </Item>
         </div>
