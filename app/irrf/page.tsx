@@ -39,7 +39,7 @@ export default function IrrfPage() {
           </Link>
         </div>
         <div className="w-full flex flex-col gap-1">
-          <h4 className="text-xl font-semibold">Redução de Base</h4>
+          <h4 className="text-xl font-semibold mb-2">Redução de Base</h4>
           <Separator className="mb-4" />
           <div className="flex flex-col gap-2">
             <Label htmlFor="deduction-amount" className="text-md">
@@ -83,10 +83,10 @@ export default function IrrfPage() {
             </InputGroup>
           </div>
           <div className="flex flex-col gap-2">
-            <h4 className="font-semibold mt-5 text-xl ">
+            <h4 className="font-semibold mt-5 text-xl mb-2">
               Redução do Imposto
             </h4>
-            <Separator />
+            <Separator className="mb-4" />
             <div className="flex flex-col gap-4">
               <p className="text-md">
                 Para valores até R$ 5.000,00, o valor do imposto será zerado.
