@@ -25,10 +25,7 @@ export interface RpaCalculatorProps {
   grossAmount: number;
   issAliquot: number;
   inssAliquot: number;
-  useSimplifiedTaxation: boolean;
-  simplifiedTaxationDeductionRate: number;
-  dependentsCount: number;
-  dependentDeductionValue: number;
+  irrfDeduction: number;
   irrfTable: IRRFTable;
 }
 
@@ -36,7 +33,7 @@ export interface RpaCalculatorResult {
   grossAmount: number;
   issValue: number;
   inssValue: number;
-  irrfResultTable: IRRFResultTable;
+  irrfValue: number;
   totalDeductions: number;
   netAmount: number;
 }
@@ -55,10 +52,7 @@ export const DefaultRpaCalculatorProps: RpaCalculatorProps = {
   grossAmount: 0,
   issAliquot: 5.0,
   inssAliquot: 11.0,
-  useSimplifiedTaxation: true,
-  simplifiedTaxationDeductionRate: 607.2,
-  dependentsCount: 0,
-  dependentDeductionValue: 189.59,
+  irrfDeduction: 607.2,
   irrfTable: DefaultIRRFTable,
 };
 
@@ -71,16 +65,13 @@ export function calculateRpaByGrossValue(
   const inssValue = parseFloat(
     ((props.grossAmount * props.inssAliquot) / 100).toFixed(2)
   );
-  const irrfResultTable = calculateIRRF(
+  const irrfValue = calculateIRRF(
     props.grossAmount,
-    props.irrfTable,
-    props.useSimplifiedTaxation,
-    props.simplifiedTaxationDeductionRate,
-    props.dependentsCount,
-    props.dependentDeductionValue
+    props.irrfDeduction,
+    props.irrfTable
   );
   const totalDeductions = parseFloat(
-    (issValue + inssValue + irrfResultTable.totalDeduction).toFixed(2)
+    (issValue + inssValue + irrfValue).toFixed(2)
   );
   const netAmount = parseFloat(
     (props.grossAmount - totalDeductions).toFixed(2)
@@ -89,7 +80,7 @@ export function calculateRpaByGrossValue(
     grossAmount: props.grossAmount,
     issValue,
     inssValue,
-    irrfResultTable,
+    irrfValue,
     totalDeductions,
     netAmount,
   };
@@ -108,12 +99,7 @@ export function calculateRpaByNetValue(
     grossAmount: 0,
     issValue: 0,
     inssValue: 0,
-    irrfResultTable: {
-      records: [],
-      totalDeduction: 0,
-      reducedBase: 0,
-      baseReduction: 0,
-    },
+    irrfValue: 0,
     totalDeductions: 0,
     netAmount: 0,
   };
@@ -140,52 +126,22 @@ export function calculateRpaByNetValue(
 
 export function calculateIRRF(
   baseAmount: number,
-  irrfTable: IRRFTable,
-  useSimplifiedTaxation: boolean,
-  simplifiedTaxationDeductionRate: number,
-  dependentsCount: number,
-  dependentDeductionValue: number
-): IRRFResultTable {
-  let resultTable: IRRFResultTable = {
-    records: [],
-    totalDeduction: 0,
-    reducedBase: 0,
-    baseReduction: 0,
-  };
-  for (let record of irrfTable.records) {
-    const reduction = useSimplifiedTaxation
-      ? simplifiedTaxationDeductionRate
-      : record.deduction + dependentsCount * dependentDeductionValue;
-    const reducedBase = baseAmount - reduction;
+  deduction: number,
+  irrfTable: IRRFTable
+): number {
+  const reducedBase = baseAmount - deduction;
+  const applicableBracket = irrfTable.records.find((bracket) => {
+    return reducedBase >= bracket.min && reducedBase <= bracket.max;
+  });
+  let irrfValue = 0;
+  irrfValue =
+    (reducedBase * applicableBracket!.rate) / 100 -
+    applicableBracket!.deduction;
 
-    if (reducedBase >= record.min && reducedBase <= record.max) {
-      resultTable.reducedBase = reducedBase;
-      resultTable.baseReduction = reduction;
-      resultTable.totalDeduction +=
-        (reducedBase - record.min) * (record.rate / 100);
-      resultTable.records.push({
-        base: parseFloat((reducedBase - record.min).toFixed(2)),
-        deduction: parseFloat(
-          ((reducedBase - record.min) * (record.rate / 100)).toFixed(2)
-        ),
-      });
-    } else if (reducedBase > record.max) {
-      resultTable.totalDeduction +=
-        (record.max - record.min) * (record.rate / 100);
-      resultTable.records.push({
-        base: parseFloat((record.max - record.min).toFixed(2)),
-        deduction: parseFloat(
-          ((record.max - record.min) * (record.rate / 100)).toFixed(2)
-        ),
-      });
-    }
+  if (baseAmount <= 5000) {
+    return 0;
+  } else if (baseAmount <= 7350) {
+    irrfValue = Math.max(irrfValue - (978.62 - 0.133145 * baseAmount), 0);
   }
-
-  resultTable.totalDeduction = parseFloat(
-    resultTable.totalDeduction.toFixed(2)
-  );
-  resultTable.reducedBase = parseFloat(resultTable.reducedBase.toFixed(2));
-  resultTable.baseReduction = parseFloat(resultTable.baseReduction.toFixed(2));
-
-  return resultTable;
+  return parseFloat(irrfValue.toFixed(2));
 }
